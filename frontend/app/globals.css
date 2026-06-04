@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,700;6..96,800&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply bg-cream-50 text-navy-900;
+    font-feature-settings: 'ss01', 'cv02', 'cv11';
+  }
+  body {
+    @apply font-sans antialiased;
+  }
+  ::selection {
+    background: #142648;
+    color: #f7f3e9;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply uppercase tracking-wider2 text-[11px] font-medium text-navy-500;
+  }
+  .display {
+    @apply font-display font-medium leading-[1.05] tracking-tightish;
+  }
+  .hairline {
+    @apply border-t border-navy-200/60;
+  }
+  .card {
+    @apply bg-white rounded-sm border border-navy-200/40 shadow-card;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium;
+  }
+  .input {
+    @apply w-full bg-white border border-navy-200 px-3 py-2 text-sm
+           focus:outline-none focus:border-navy-700 focus:ring-1 focus:ring-navy-700/20
+           placeholder:text-navy-400 rounded-sm;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-navy-700 text-cream-50
+           px-4 py-2 text-sm font-medium rounded-sm
+           hover:bg-navy-800 active:bg-navy-900 transition
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-sm font-medium text-navy-700
+           hover:text-navy-900 transition;
+  }
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-sm
+           text-navy-600 hover:text-navy-900 hover:bg-navy-50 transition;
+  }
+  .nav-link-active {
+    @apply bg-navy-700 text-cream-50 hover:bg-navy-700 hover:text-cream-50;
+  }
+}
+
+/* subtle paper texture on the dashboard background */
+.paper-bg {
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(20, 38, 72, 0.025), transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(200, 155, 60, 0.04), transparent 50%);
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(20, 38, 72, 0.04) 0%,
+    rgba(20, 38, 72, 0.10) 50%,
+    rgba(20, 38, 72, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+/* Subtle entry animation for content blocks */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fadeUp 0.32s ease-out both;
+}
+.fade-up-stagger > * {
+  animation: fadeUp 0.36s ease-out both;
+}
+.fade-up-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.fade-up-stagger > *:nth-child(2) { animation-delay: 40ms; }
+.fade-up-stagger > *:nth-child(3) { animation-delay: 80ms; }
+.fade-up-stagger > *:nth-child(4) { animation-delay: 120ms; }
+.fade-up-stagger > *:nth-child(5) { animation-delay: 160ms; }
+.fade-up-stagger > *:nth-child(6) { animation-delay: 200ms; }
+
+/* Mobile-friendly tap targets */
+@media (max-width: 768px) {
+  .btn-primary, .btn-ghost {
+    min-height: 40px;
+  }
+}
+
+/* --- Homepage motion --- */
+
+/* Gentle floating motion for the hero dashboard mock */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.float-slow { animation: floatSlow 6s ease-in-out infinite; }
+
+@keyframes floatSlower {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+.float-slower { animation: floatSlower 8s ease-in-out infinite; }
+
+/* Pulsing LIVE indicator */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(200, 155, 60, 0.4); }
+  50%      { opacity: 0.7; box-shadow: 0 0 0 6px rgba(200, 155, 60, 0); }
+}
+.pulse-dot { animation: pulseDot 1.6s ease-in-out infinite; }
+
+/* Slide-in for live feed entries */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.slide-in-right { animation: slideInRight 0.4s ease-out both; }
+
+/* Scroll-reveal — applied by IntersectionObserver hook */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card hover lift */
+.lift {
+  transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
+}
+.lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -20px rgba(20, 38, 72, 0.25);
+}
+
+/* Subtle ambient glow for the hero panel */
+.ambient-glow {
+  background:
+    radial-gradient(900px 400px at 75% 30%, rgba(200, 155, 60, 0.08), transparent 60%),
+    radial-gradient(700px 500px at 10% 80%, rgba(20, 38, 72, 0.06), transparent 60%);
+}
+
+/* Sparkline + chart bar grow */
+@keyframes growUp {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+.grow-up {
+  transform-origin: bottom;
+  animation: growUp 0.9s ease-out both;
+}
+
+/* --- Live ticker marquee --- */
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: tickerScroll 70s linear infinite;
+}
+.ticker-pause:hover .ticker-track { animation-play-state: paused; }
+
+/* --- SVG path draw-on (paired with .reveal.is-visible parent) --- */
+@keyframes drawLine {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+.draw-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.reveal.is-visible .draw-line {
+  animation: drawLine 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+.reveal.is-visible .draw-line-late {
+  animation: drawLine 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;
+}
+
+/* Area-fill fade-in for charts */
+@keyframes fadeFill {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.reveal.is-visible .fade-fill {
+  animation: fadeFill 1s ease-out 0.6s both;
+}
+
+/* --- Glowing pulse for critical alerts --- */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(193, 60, 60, 0.0); }
+  50%      { box-shadow: 0 0 0 6px rgba(193, 60, 60, 0.18); }
+}
+.glow-pulse { animation: glowPulse 2.2s ease-in-out infinite; }
+
+/* --- Mouse-parallax wrapper --- */
+.parallax-tilt {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* --- AI thinking dot --- */
+@keyframes thinkingDot {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+.thinking-dot:nth-child(1) { animation: thinkingDot 1.4s ease-in-out infinite; }
+.thinking-dot:nth-child(2) { animation: thinkingDot 1.4s ease-in-out 0.2s infinite; }
+.thinking-dot:nth-child(3) { animation: thinkingDot 1.4s ease-in-out 0.4s infinite; }

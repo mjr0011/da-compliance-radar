@@ -1,0 +1,50 @@
+# FastAPI stack
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-multipart==0.0.17
+
+# Validation / settings
+pydantic==2.10.3
+pydantic-settings==2.6.1
+email-validator==2.2.0
+
+# Database
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+alembic==1.14.0
+
+# Auth / security
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+bcrypt==4.0.1
+pyotp==2.9.0
+qrcode[pil]==8.0
+slowapi==0.1.9
+
+# HTTP client
+httpx==0.28.1
+tenacity==9.0.0
+
+# Background jobs
+celery==5.4.0
+redis==5.2.1
+
+# AI
+openai==1.57.4
+
+# Email
+resend==2.5.1
+
+# Utilities
+python-dateutil==2.9.0.post0
+orjson==3.10.12
+structlog==24.4.0
+
+# Monitoring (optional — only initialised if SENTRY_DSN is set)
+sentry-sdk[fastapi,sqlalchemy,celery]==2.19.2
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.25.0
+pytest-cov==6.0.0
+httpx[cli]==0.28.1

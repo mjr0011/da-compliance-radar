@@ -1,0 +1,67 @@
+#
+# Staging environment overlay.
+#
+# Usage:
+#   cp .env.staging.example .env.staging
+#   docker compose -f docker-compose.yml -f docker-compose.staging.yml --env-file .env.staging up -d
+#
+# Key differences from local dev:
+#   - No source volume mounts (image is treated as immutable)
+#   - No --reload on uvicorn; uvicorn runs with 4 workers
+#   - Frontend runs in production mode (`npm run build && npm start`)
+#   - Ports remapped to avoid clashing with local dev
+#   - Postgres is NOT exposed to the host
+#   - Restart policy is `always`
+#
+services:
+  postgres:
+    restart: always
+    ports: []  # no host exposure
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
+
+  redis:
+    restart: always
+    ports: []
+
+  backend:
+    restart: always
+    volumes: []
+    ports:
+      - "8001:8000"
+    environment:
+      ENVIRONMENT: staging
+      DEBUG: "false"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+
+  worker:
+    restart: always
+    volumes: []
+    environment:
+      ENVIRONMENT: staging
+    command: celery -A app.workers.celery_app worker --loglevel=info --concurrency=4
+
+  beat:
+    restart: always
+    volumes: []
+    environment:
+      ENVIRONMENT: staging
+
+  streaming:
+    restart: always
+    volumes: []
+    environment:
+      ENVIRONMENT: staging
+
+  frontend:
+    restart: always
+    volumes: []
+    ports:
+      - "3001:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=https://staging-api.dennisandassociates.co.uk
+      - NODE_ENV=production
+    command: sh -c "npm run build && npm start"
+
+volumes:
+  postgres_data_staging:
