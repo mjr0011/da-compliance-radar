@@ -1,72 +1,35 @@
-# Docs: https://docs.flet.dev/publish/web/static-website/hosting/github-pages/
-
-name: Web Build + Deploy to GitHub Pages
+name: Deploy Flutter Web
 
 on:
   push:
     branches:
       - main
 
-  pull_request:
-    branches:
-      - main
-
-  workflow_dispatch:
-
-# Allow only one concurrent deployment
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 permissions:
   contents: read
   pages: write
   id-token: write
 
-env:
-  UV_PYTHON: "3.12"
-
-  # https://docs.flet.dev/reference/environment-variables
-  FLET_CLI_NO_RICH_OUTPUT: 1
-
 jobs:
   build:
-    name: Build web app
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: subosito/flutter-action@v2
         with:
-          python-version: "3.12"
+          flutter-version: 'stable'
 
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v6
+      - run: flutter pub get
 
-      - name: Install dependencies
-        run: |
-          uv pip install --system flet
+      - run: flutter build web --release
 
-      - name: Build app
-        shell: bash
-        run: |
-          uv run flet build web \
-            --yes \
-            --verbose \
-            --base-url ${GITHUB_REPOSITORY#*/} \
-            --route-url-strategy hash
-
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
 
   deploy:
-    name: Deploy to GitHub Pages
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
 
@@ -75,9 +38,5 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Deploy to GitHub Pages 🚀
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
