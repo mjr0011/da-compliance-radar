@@ -1,22 +1,30 @@
-# docs: https://docs.flet.dev/publish/web/static-website/hosting/github-pages/
+# Docs: https://docs.flet.dev/publish/web/static-website/hosting/github-pages/
 
 name: Web Build + Deploy to GitHub Pages
 
 on:
   push:
-  pull_request:
+    branches:
+      - main
 
-  # Allows you to run this workflow manually from the Actions tab of the repository
+  pull_request:
+    branches:
+      - main
+
   workflow_dispatch:
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, does not cancel in-progress runs as we want to allow these production deployments to complete.
+# Allow only one concurrent deployment
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 env:
-  UV_PYTHON: 3.12   # Python version
+  UV_PYTHON: "3.12"
 
   # https://docs.flet.dev/reference/environment-variables
   FLET_CLI_NO_RICH_OUTPUT: 1
@@ -30,30 +38,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: |
+          uv pip install --system flet
 
       - name: Build app
         shell: bash
         run: |
-          uv run flet build web --yes --verbose --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
+          uv run flet build web \
+            --yes \
+            --verbose \
+            --base-url ${GITHUB_REPOSITORY#*/} \
+            --route-url-strategy hash
 
       - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v4.0.0
+        uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
-          name: web-build-artifact
-          retention-days: 20
 
   deploy:
     name: Deploy to GitHub Pages
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # deploy only on push to main
-    needs: build  # wait for the "build" job to get done
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
     runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
 
     environment:
       name: github-pages
@@ -65,6 +80,4 @@ jobs:
 
       - name: Deploy to GitHub Pages 🚀
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
-        with:
-          artifact_name: web-build-artifact
+        uses: actions/deploy-pages@v4
